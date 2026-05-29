@@ -4,11 +4,13 @@ from datetime import datetime
 import os
 
 app = Flask(__name__)
-DB_PATH = os.environ.get("AAE_DB_PATH", "/workspace/antenna-access-exchange/data.db")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.environ.get("AAE_DB_PATH", os.path.join(BASE_DIR, "data", "data.db"))
 ADMIN_TOKEN = os.environ.get("AAE_ADMIN_TOKEN", "admin123")
 
 
 def db():
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
