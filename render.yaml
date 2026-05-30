@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: antenna-access-exchange
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn -w 2 -k gthread --threads 4 --timeout 60 -b 0.0.0.0:$PORT app:app
+    healthCheckPath: /healthz
+    envVars:
+      - key: AAE_SECRET_KEY
+        sync: false
+      - key: AAE_ADMIN_USER
+        sync: false
+      - key: AAE_ADMIN_PASSWORD
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: antenna-access-exchange-db
+          property: connectionString
+
+databases:
+  - name: antenna-access-exchange-db
+    plan: starter

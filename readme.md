@@ -238,3 +238,41 @@ site1 token で /serve 呼び出し成功（site2 が返る）
 返却 click_url を叩くと 302 遷移し、site1 click_out +1 / site2 click_in +1 を確認
 
 これで「申請管理のみ」から「交換ロジックが実際に動く状態」へ移行完了。
+
+## 12. 本番運用対応（不足機能の実装）
+
+実行日: 2026-05-30
+
+実装項目
+認証強化
+管理画面を token直リンク方式から login方式へ変更（AAE_ADMIN_USER/AAE_ADMIN_PASSWORD）
+セッション管理 + CSRFトークン検証を全POST操作へ適用
+
+不正対策
+IP単位レート制限（/serve, /c/*）
+クリック重複排除（IP+UA+source+target+時間窓の指紋）
+BAN/UNBAN機能（ban_reason保持）
+
+可用性
+gunicorn本番実行設定（Procfile / Dockerfile）
+/healthz ヘルスチェック
+
+DB本番化
+SQLAlchemy対応（DATABASE_URL で PostgreSQL接続、未指定時SQLite）
+バックアップ/復元スクリプト追加
+scripts_backup.sh
+scripts_restore.sh
+
+セキュリティ
+入力バリデーション（URL/長さ）
+CSRF導入
+HTTPS前提の運用手順を明記
+
+運用機能
+監査ログテーブル追加（audit_logs）
+管理画面から手動補正（adjust）
+
+法務/規約
+/terms 利用規約
+/privacy プライバシーポリシー
+申請時の同意チェックボックス導入
